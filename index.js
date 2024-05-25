@@ -76,8 +76,8 @@ const updateFilesToVaults = async (options = {}) => {
         const fileCommand = isFileDeleted
           ? `git rm ${filePath}`
           : `mkdir -p ${dirTreePath}; cp -r ${fileToCopyAbsolutePath} ${filePath}`;
-        console.log(await runCommand(`cd ${vaultPath}; ${fileCommand};`));
-        console.log(await runCommand(`cd ${vaultPath}; git add ${filePath};`));
+        await runCommand(`cd ${vaultPath}; ${fileCommand};`);
+        await runCommand(`cd ${vaultPath}; git add ${filePath};`);
       }
 
       if (options?.commit) {
