@@ -4,7 +4,7 @@ const os = require("node:os");
 
 const TEMPLATE_VAULT_PATH = path.join(
   os.homedir(),
-  process.argv.at(2) || "home_files/git_dir/template-sanjar-notes" // just edit this quote string part
+  "home_files/git_dir/template-sanjar-notes" // just edit this quote string part
 );
 
 const PLATFORMS = {

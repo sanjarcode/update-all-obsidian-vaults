@@ -34,13 +34,11 @@ const getLatestChangedFiles = async () => {
     .filter((filePath) => filePath && filePath.startsWith(".obsidian/"))
     .map((filePath) => filePath.replace("\n", ""));
 
-  console.log(files);
   return { files, latestCommit };
 };
 
 // Creates, Updates, deletes file as per change
 const updateFilesToVaults = async (options = {}) => {
-  const { commit = true } = options;
   const vaults = getVaults();
   const { files: filesPathsToCopy, latestCommit } =
     await getLatestChangedFiles();
@@ -74,9 +72,7 @@ const updateFilesToVaults = async (options = {}) => {
         );
         const isFileDeleted = err?.code === 1;
 
-        console.log(
-          await runCommand(`cd ${vaultPath}; git checkout ${filePath};`)
-        );
+        await runCommand(`cd ${vaultPath}; git checkout ${filePath};`);
         const fileCommand = isFileDeleted
           ? `git rm ${filePath}`
           : `mkdir -p ${dirTreePath}; cp -r ${fileToCopyAbsolutePath} ${filePath}`;
