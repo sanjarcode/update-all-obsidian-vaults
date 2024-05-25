@@ -2,7 +2,6 @@
 const { TEMPLATE_VAULT_PATH, getVaults } = require("./constants");
 const path = require("path");
 const runCommand = require("./terminal");
-const { error } = require("console");
 
 /**
  * @returns {Array<String>}
@@ -40,7 +39,8 @@ const getLatestChangedFiles = async () => {
 };
 
 // Creates, Updates, deletes file as per change
-const updateFilesToVaults = async () => {
+const updateFilesToVaults = async (options = {}) => {
+  const { commit = true } = options;
   const vaults = getVaults();
   const { files: filesPathsToCopy, latestCommit } =
     await getLatestChangedFiles();
@@ -84,10 +84,11 @@ const updateFilesToVaults = async () => {
         console.log(await runCommand(`cd ${vaultPath}; git add ${filePath};`));
       }
 
-      // Commit
-      //   await runCommand(
-      //     `cd ${vaultPath}; git commit -m "Update prefs using template repo commit ${latestCommit}"`
-      //   );
+      if (options?.commit) {
+        await runCommand(
+          `cd ${vaultPath}; git commit -m "Update prefs using template repo commit ${latestCommit}"`
+        );
+      }
       // All files done, so print success message
       console.log(`Successfully updated vault ${vaultName}`);
     } catch (e) {
@@ -98,7 +99,9 @@ const updateFilesToVaults = async () => {
 
 async function main() {
   try {
-    await updateFilesToVaults();
+    await updateFilesToVaults({
+      commit: !process.argv.slice(2).includes("--no-commit"),
+    });
   } catch (e) {
     console.log(e);
   }
